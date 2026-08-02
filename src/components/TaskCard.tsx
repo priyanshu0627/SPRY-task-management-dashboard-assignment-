@@ -1,3 +1,4 @@
+import { useTasks } from '../context/tasks';
 import { formatDueDate, isOverdue } from '../lib/date';
 import { TaskStatus, type Task } from '../types/task';
 import { StatusBadge } from './StatusBadge';
@@ -5,11 +6,10 @@ import { Button } from './ui/Button';
 
 interface TaskCardProps {
   task: Task;
-  onEdit: (task: Task) => void;
-  onDelete: (task: Task) => void;
 }
 
-export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
+export function TaskCard({ task }: TaskCardProps) {
+  const { openEditForm, requestDelete } = useTasks();
   const overdue = task.status !== TaskStatus.Completed && isOverdue(task.dueDate);
 
   return (
@@ -33,7 +33,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => onEdit(task)}
+            onClick={() => openEditForm(task)}
             aria-label={`Edit ${task.title}`}
           >
             Edit
@@ -41,7 +41,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => onDelete(task)}
+            onClick={() => requestDelete(task)}
             aria-label={`Delete ${task.title}`}
             className="text-red-600 ring-red-200 hover:bg-red-50"
           >

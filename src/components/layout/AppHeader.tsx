@@ -1,16 +1,15 @@
 import { NavLink } from 'react-router-dom';
+import { useTasks } from '../../context/tasks';
 import { Button } from '../ui/Button';
-
-interface AppHeaderProps {
-  onAddTask: () => void;
-}
 
 const NAV_LINKS = [
   { to: '/', label: 'All Tasks' },
   { to: '/completed', label: 'Completed' },
 ];
 
-export function AppHeader({ onAddTask }: AppHeaderProps) {
+export function AppHeader() {
+  const { openCreateForm } = useTasks();
+
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-5 sm:px-6">
@@ -20,7 +19,7 @@ export function AppHeader({ onAddTask }: AppHeaderProps) {
             Track what needs doing, what is in flight and what is done.
           </p>
         </div>
-        <Button onClick={onAddTask}>Add task</Button>
+        <Button onClick={openCreateForm}>Add task</Button>
       </div>
 
       <nav className="mx-auto max-w-5xl px-4 sm:px-6">

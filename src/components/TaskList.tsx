@@ -5,17 +5,9 @@ interface TaskListProps {
   tasks: Task[];
   emptyTitle: string;
   emptyDescription: string;
-  onEdit: (task: Task) => void;
-  onDelete: (task: Task) => void;
 }
 
-export function TaskList({
-  tasks,
-  emptyTitle,
-  emptyDescription,
-  onEdit,
-  onDelete,
-}: TaskListProps) {
+export function TaskList({ tasks, emptyTitle, emptyDescription }: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
@@ -29,7 +21,7 @@ export function TaskList({
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tasks.map((task) => (
         <li key={task.id}>
-          <TaskCard task={task} onEdit={onEdit} onDelete={onDelete} />
+          <TaskCard task={task} />
         </li>
       ))}
     </ul>

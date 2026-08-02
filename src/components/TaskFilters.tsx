@@ -1,16 +1,9 @@
-import {
-  STATUS_LABELS,
-  TASK_STATUSES,
-  type SortDirection,
-  type StatusFilter,
-} from '../types/task';
+import { useTaskFilters } from '../context/taskFilters';
+import { STATUS_LABELS, TASK_STATUSES, type StatusFilter } from '../types/task';
 import { Button } from './ui/Button';
 
 interface TaskFiltersProps {
-  status?: StatusFilter;
-  onStatusChange?: (status: StatusFilter) => void;
-  sortDirection: SortDirection;
-  onSortDirectionToggle: () => void;
+  showStatusFilter?: boolean;
   visibleCount: number;
   totalCount: number;
 }
@@ -18,17 +11,12 @@ interface TaskFiltersProps {
 const selectClasses =
   'rounded-lg px-3 py-2 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-slate-900';
 
-export function TaskFilters({
-  status,
-  onStatusChange,
-  sortDirection,
-  onSortDirectionToggle,
-  visibleCount,
-  totalCount,
-}: TaskFiltersProps) {
+export function TaskFilters({ showStatusFilter, visibleCount, totalCount }: TaskFiltersProps) {
+  const { status, sortDirection, setStatus, toggleSortDirection } = useTaskFilters();
+
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
-      {status !== undefined && onStatusChange && (
+      {showStatusFilter && (
         <div className="flex items-center gap-2">
           <label htmlFor="status-filter" className="text-sm font-medium text-slate-700">
             Status
@@ -36,7 +24,7 @@ export function TaskFilters({
           <select
             id="status-filter"
             value={status}
-            onChange={(event) => onStatusChange(event.target.value as StatusFilter)}
+            onChange={(event) => setStatus(event.target.value as StatusFilter)}
             className={selectClasses}
           >
             <option value="all">All</option>
@@ -51,7 +39,7 @@ export function TaskFilters({
 
       <Button
         variant="secondary"
-        onClick={onSortDirectionToggle}
+        onClick={toggleSortDirection}
         aria-label={`Sort by due date, currently ${sortDirection === 'asc' ? 'earliest first' : 'latest first'}`}
       >
         Due date {sortDirection === 'asc' ? '↑' : '↓'}

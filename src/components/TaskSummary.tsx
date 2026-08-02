@@ -1,11 +1,11 @@
+import { useTasks } from '../context/tasks';
+import { countByStatus } from '../lib/tasks';
 import { STATUS_LABELS, TASK_STATUSES } from '../types/task';
-import type { StatusCounts } from '../lib/tasks';
 
-interface TaskSummaryProps {
-  counts: StatusCounts;
-}
+export function TaskSummary() {
+  const { tasks } = useTasks();
+  const counts = countByStatus(tasks);
 
-export function TaskSummary({ counts }: TaskSummaryProps) {
   const cards = [
     { label: 'Total', value: counts.total },
     ...TASK_STATUSES.map((status) => ({ label: STATUS_LABELS[status], value: counts[status] })),
