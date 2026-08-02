@@ -30,7 +30,7 @@ export function AppHeader() {
                 to={link.to}
                 end
                 className={({ isActive }) =>
-                  `inline-block border-b-2 pb-3 text-sm font-medium transition ${
+                  `inline-block rounded-t border-b-2 pb-3 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${
                     isActive
                       ? 'border-slate-900 text-slate-900'
                       : 'border-transparent text-slate-500 hover:text-slate-700'

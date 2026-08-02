@@ -45,7 +45,7 @@ export function TaskFilters({ showStatusFilter, visibleCount, totalCount }: Task
         Due date {sortDirection === 'asc' ? '↑' : '↓'}
       </Button>
 
-      <p className="ml-auto text-sm text-slate-500" aria-live="polite">
+      <p className="w-full text-sm text-slate-500 sm:ml-auto sm:w-auto" aria-live="polite">
         Showing {visibleCount} of {totalCount}
       </p>
     </div>
