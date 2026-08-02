@@ -23,3 +23,7 @@ export interface Task {
 }
 
 export type TaskDraft = Pick<Task, 'title' | 'description' | 'status' | 'dueDate'>;
+
+export type StatusFilter = TaskStatus | 'all';
+
+export type SortDirection = 'asc' | 'desc';

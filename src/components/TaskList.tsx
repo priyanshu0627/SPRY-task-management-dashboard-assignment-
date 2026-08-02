@@ -3,16 +3,24 @@ import { TaskCard } from './TaskCard';
 
 interface TaskListProps {
   tasks: Task[];
+  emptyTitle: string;
+  emptyDescription: string;
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
 }
 
-export function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
+export function TaskList({
+  tasks,
+  emptyTitle,
+  emptyDescription,
+  onEdit,
+  onDelete,
+}: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
-        <p className="text-sm font-medium text-slate-900">No tasks yet</p>
-        <p className="mt-1 text-sm text-slate-500">Tasks you create will show up here.</p>
+        <p className="text-sm font-medium text-slate-900">{emptyTitle}</p>
+        <p className="mt-1 text-sm text-slate-500">{emptyDescription}</p>
       </div>
     );
   }

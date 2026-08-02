@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { TaskFilters } from './components/TaskFilters';
 import { TaskForm } from './components/TaskForm';
 import { TaskList } from './components/TaskList';
 import { TaskSummary } from './components/TaskSummary';
@@ -6,17 +7,27 @@ import { Button } from './components/ui/Button';
 import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import { Modal } from './components/ui/Modal';
 import { INITIAL_TASKS } from './data/tasks';
-import { countByStatus } from './lib/tasks';
-import type { Task, TaskDraft } from './types/task';
+import { countByStatus, filterAndSortTasks } from './lib/tasks';
+import type { SortDirection, StatusFilter, Task, TaskDraft } from './types/task';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [taskPendingDelete, setTaskPendingDelete] = useState<Task | null>(null);
 
   const counts = countByStatus(tasks);
+
+  const visibleTasks = useMemo(
+    () => filterAndSortTasks(tasks, { status: statusFilter, sortDirection }),
+    [tasks, statusFilter, sortDirection],
+  );
+
+  const isFiltered = statusFilter !== 'all';
 
   const openCreateForm = () => {
     setEditingTask(null);
@@ -59,7 +70,29 @@ function App() {
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6">
         <TaskSummary counts={counts} />
-        <TaskList tasks={tasks} onEdit={openEditForm} onDelete={setTaskPendingDelete} />
+
+        <TaskFilters
+          status={statusFilter}
+          sortDirection={sortDirection}
+          onStatusChange={setStatusFilter}
+          onSortDirectionToggle={() =>
+            setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'))
+          }
+          visibleCount={visibleTasks.length}
+          totalCount={tasks.length}
+        />
+
+        <TaskList
+          tasks={visibleTasks}
+          emptyTitle={isFiltered ? 'No matching tasks' : 'No tasks yet'}
+          emptyDescription={
+            isFiltered
+              ? 'Try a different status filter.'
+              : 'Tasks you create will show up here.'
+          }
+          onEdit={openEditForm}
+          onDelete={setTaskPendingDelete}
+        />
       </main>
 
       <Modal
