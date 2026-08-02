@@ -17,7 +17,6 @@ export function CompletedTasksPage() {
   return (
     <TaskBoard
       tasks={completedTasks}
-      totalCount={tasks.length}
       emptyTitle="Nothing completed yet"
       emptyDescription="Tasks you mark as completed will show up here."
     />

@@ -6,7 +6,7 @@ export function todayISO(): string {
 
 export function formatDueDate(isoDate: string): string {
   const [year, month, day] = isoDate.split('-').map(Number);
-  if (year === undefined || month === undefined || day === undefined) return isoDate;
+  if (!year || !month || !day) return isoDate;
 
   return new Date(year, month - 1, day).toLocaleDateString(undefined, {
     day: 'numeric',

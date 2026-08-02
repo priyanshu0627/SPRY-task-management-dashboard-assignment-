@@ -5,7 +5,7 @@ import { Button } from './ui/Button';
 interface TaskFiltersProps {
   showStatusFilter?: boolean;
   visibleCount: number;
-  totalCount: number;
+  totalCount?: number;
 }
 
 const selectClasses =
@@ -46,7 +46,9 @@ export function TaskFilters({ showStatusFilter, visibleCount, totalCount }: Task
       </Button>
 
       <p className="w-full text-sm text-slate-500 sm:ml-auto sm:w-auto" aria-live="polite">
-        Showing {visibleCount} of {totalCount}
+        {totalCount === undefined
+          ? `${visibleCount} ${visibleCount === 1 ? 'task' : 'tasks'}`
+          : `Showing ${visibleCount} of ${totalCount}`}
       </p>
     </div>
   );

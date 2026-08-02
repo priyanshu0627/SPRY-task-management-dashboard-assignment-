@@ -39,11 +39,10 @@ export function TaskCard({ task }: TaskCardProps) {
             Edit
           </Button>
           <Button
-            variant="secondary"
+            variant="dangerGhost"
             size="sm"
             onClick={() => requestDelete(task)}
             aria-label={`Delete ${task.title}`}
-            className="text-red-600 ring-red-200 hover:bg-red-50"
           >
             Delete
           </Button>

@@ -13,7 +13,7 @@ const TITLE_MAX_LENGTH = 100;
 const controlClasses =
   'mt-1.5 block w-full rounded-lg px-3 py-2 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-slate-900';
 
-const VALIDATION_RULES: Record<string, RegisterOptions<TaskDraft>> = {
+const VALIDATION_RULES: Partial<Record<keyof TaskDraft, RegisterOptions<TaskDraft>>> = {
   title: {
     setValueAs: (value: string) => value.trim(),
     required: 'Title is required.',
@@ -47,9 +47,13 @@ function Label({
   );
 }
 
-function FieldError({ children }: { children?: string }) {
+function FieldError({ id, children }: { id: string; children?: string }) {
   if (!children) return null;
-  return <p className="mt-1.5 text-sm text-red-600">{children}</p>;
+  return (
+    <p id={id} className="mt-1.5 text-sm text-red-600">
+      {children}
+    </p>
+  );
 }
 
 export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
@@ -75,10 +79,12 @@ export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
         <input
           id="title"
           placeholder="What needs doing?"
+          aria-invalid={errors.title ? true : undefined}
+          aria-describedby={errors.title ? 'title-error' : undefined}
           className={`${controlClasses} ${errors.title ? 'ring-red-400' : ''}`}
           {...register('title', VALIDATION_RULES.title)}
         />
-        <FieldError>{errors.title?.message}</FieldError>
+        <FieldError id="title-error">{errors.title?.message}</FieldError>
       </div>
 
       <div>
@@ -112,10 +118,11 @@ export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
             id="dueDate"
             type="date"
             aria-invalid={errors.dueDate ? true : undefined}
+            aria-describedby={errors.dueDate ? 'due-date-error' : undefined}
             className={`${controlClasses} ${errors.dueDate ? 'ring-red-400' : ''}`}
             {...register('dueDate', VALIDATION_RULES.dueDate)}
           />
-          <FieldError>{errors.dueDate?.message}</FieldError>
+          <FieldError id="due-date-error">{errors.dueDate?.message}</FieldError>
         </div>
       </div>
 

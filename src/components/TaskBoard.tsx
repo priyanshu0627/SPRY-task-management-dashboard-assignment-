@@ -4,7 +4,7 @@ import type { Task } from '../types/task';
 
 interface TaskBoardProps {
   tasks: Task[];
-  totalCount: number;
+  totalCount?: number;
   showStatusFilter?: boolean;
   emptyTitle: string;
   emptyDescription: string;

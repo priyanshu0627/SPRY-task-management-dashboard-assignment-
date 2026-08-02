@@ -1,12 +1,13 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'dangerGhost';
 type ButtonSize = 'sm' | 'md';
 
 const VARIANT_STYLES: Record<ButtonVariant, string> = {
   primary: 'bg-slate-900 text-white hover:bg-slate-800',
   secondary: 'bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50',
   danger: 'bg-red-600 text-white hover:bg-red-500',
+  dangerGhost: 'bg-white text-red-600 ring-1 ring-inset ring-red-200 hover:bg-red-50',
 };
 
 const SIZE_STYLES: Record<ButtonSize, string> = {
