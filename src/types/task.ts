@@ -1,10 +1,3 @@
-/**
- * Status values as a const object rather than a TS enum.
- *
- * Enums emit runtime code and are awkward to iterate; this gives named
- * constants, a derived union type and a real array to map over, all from one
- * declaration.
- */
 export const TaskStatus = {
   Pending: 'pending',
   InProgress: 'in-progress',
@@ -26,6 +19,7 @@ export interface Task {
   title: string;
   description: string;
   status: TaskStatus;
-  /** ISO calendar date (YYYY-MM-DD). No time component — the app only deals in whole days. */
   dueDate: string;
 }
+
+export type TaskDraft = Pick<Task, 'title' | 'description' | 'status' | 'dueDate'>;
