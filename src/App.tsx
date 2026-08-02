@@ -1,4 +1,12 @@
+import { TaskList } from './components/TaskList';
+import { TaskSummary } from './components/TaskSummary';
+import { INITIAL_TASKS } from './data/tasks';
+import { countByStatus } from './lib/tasks';
+
 function App() {
+  const tasks = INITIAL_TASKS;
+  const counts = countByStatus(tasks);
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-slate-200 bg-white">
@@ -10,7 +18,10 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6" />
+      <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6">
+        <TaskSummary counts={counts} />
+        <TaskList tasks={tasks} />
+      </main>
     </div>
   );
 }
