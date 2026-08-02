@@ -3,12 +3,13 @@ import { TaskCard } from './TaskCard';
 
 interface TaskListProps {
   tasks: Task[];
+  onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
 }
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
   if (tasks.length === 0) {
     return (
-      // there should be an empty HOC component from design system for consistency instead of this
       <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
         <p className="text-sm font-medium text-slate-900">No tasks yet</p>
         <p className="mt-1 text-sm text-slate-500">Tasks you create will show up here.</p>
@@ -20,7 +21,7 @@ export function TaskList({ tasks }: TaskListProps) {
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tasks.map((task) => (
         <li key={task.id}>
-          <TaskCard task={task} />
+          <TaskCard task={task} onEdit={onEdit} onDelete={onDelete} />
         </li>
       ))}
     </ul>

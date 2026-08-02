@@ -1,9 +1,10 @@
 import { useForm, type RegisterOptions } from 'react-hook-form';
 import type { ReactNode } from 'react';
-import { STATUS_LABELS, TASK_STATUSES, TaskStatus, type TaskDraft } from '../types/task';
+import { STATUS_LABELS, TASK_STATUSES, TaskStatus, type Task, type TaskDraft } from '../types/task';
 import { Button } from './ui/Button';
 
 interface TaskFormProps {
+  task?: Task | null;
   onSubmit: (values: TaskDraft) => void;
   onCancel: () => void;
 }
@@ -51,17 +52,17 @@ function FieldError({ children }: { children?: string }) {
   return <p className="mt-1.5 text-sm text-red-600">{children}</p>;
 }
 
-export function TaskForm({ onSubmit, onCancel }: TaskFormProps) {
+export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<TaskDraft>({
     defaultValues: {
-      title: '',
-      description: '',
-      status: TaskStatus.Pending,
-      dueDate: '',
+      title: task?.title ?? '',
+      description: task?.description ?? '',
+      status: task?.status ?? TaskStatus.Pending,
+      dueDate: task?.dueDate ?? '',
     },
   });
 
@@ -122,7 +123,7 @@ export function TaskForm({ onSubmit, onCancel }: TaskFormProps) {
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">Add task</Button>
+        <Button type="submit">{task ? 'Save changes' : 'Add task'}</Button>
       </div>
     </form>
   );

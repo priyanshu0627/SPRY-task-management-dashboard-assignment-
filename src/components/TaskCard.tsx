@@ -1,13 +1,15 @@
 import { formatDueDate, isOverdue } from '../lib/date';
 import { TaskStatus, type Task } from '../types/task';
 import { StatusBadge } from './StatusBadge';
+import { Button } from './ui/Button';
 
 interface TaskCardProps {
   task: Task;
+  onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
 }
 
-export function TaskCard({ task }: TaskCardProps) {
-  // A completed task is not "late" in any useful sense.
+export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   const overdue = task.status !== TaskStatus.Completed && isOverdue(task.dueDate);
 
   return (
@@ -21,11 +23,31 @@ export function TaskCard({ task }: TaskCardProps) {
         <p className="mt-2 line-clamp-3 text-sm text-slate-600">{task.description}</p>
       )}
 
-      <div className="mt-auto pt-4">
+      <div className="mt-auto flex items-end justify-between gap-3 pt-4">
         <p className={`text-xs font-medium ${overdue ? 'text-red-600' : 'text-slate-500'}`}>
           Due {formatDueDate(task.dueDate)}
           {overdue && ' · Overdue'}
         </p>
+
+        <div className="flex shrink-0 gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => onEdit(task)}
+            aria-label={`Edit ${task.title}`}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => onDelete(task)}
+            aria-label={`Delete ${task.title}`}
+            className="text-red-600 ring-red-200 hover:bg-red-50"
+          >
+            Delete
+          </Button>
+        </div>
       </div>
     </article>
   );
