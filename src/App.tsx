@@ -1,13 +1,14 @@
-import { useMemo, useState } from 'react';
-import { TaskFilters } from './components/TaskFilters';
+import { useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { TaskForm } from './components/TaskForm';
-import { TaskList } from './components/TaskList';
 import { TaskSummary } from './components/TaskSummary';
-import { Button } from './components/ui/Button';
+import { AppHeader } from './components/layout/AppHeader';
 import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import { Modal } from './components/ui/Modal';
 import { INITIAL_TASKS } from './data/tasks';
-import { countByStatus, filterAndSortTasks } from './lib/tasks';
+import { countByStatus } from './lib/tasks';
+import { AllTasksPage } from './pages/AllTasksPage';
+import { CompletedTasksPage } from './pages/CompletedTasksPage';
 import type { SortDirection, StatusFilter, Task, TaskDraft } from './types/task';
 
 function App() {
@@ -22,12 +23,8 @@ function App() {
 
   const counts = countByStatus(tasks);
 
-  const visibleTasks = useMemo(
-    () => filterAndSortTasks(tasks, { status: statusFilter, sortDirection }),
-    [tasks, statusFilter, sortDirection],
-  );
-
-  const isFiltered = statusFilter !== 'all';
+  const toggleSortDirection = () =>
+    setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
 
   const openCreateForm = () => {
     setEditingTask(null);
@@ -55,63 +52,66 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-5 sm:px-6">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">Task Dashboard</h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Track what needs doing, what is in flight and what is done.
-            </p>
-          </div>
-          <Button onClick={openCreateForm}>Add task</Button>
-        </div>
-      </header>
+    <BrowserRouter>
+      <div className="min-h-screen">
+        <AppHeader onAddTask={openCreateForm} />
 
-      <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6">
-        <TaskSummary counts={counts} />
+        <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6">
+          <TaskSummary counts={counts} />
 
-        <TaskFilters
-          status={statusFilter}
-          sortDirection={sortDirection}
-          onStatusChange={setStatusFilter}
-          onSortDirectionToggle={() =>
-            setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'))
-          }
-          visibleCount={visibleTasks.length}
-          totalCount={tasks.length}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <AllTasksPage
+                  tasks={tasks}
+                  statusFilter={statusFilter}
+                  sortDirection={sortDirection}
+                  onStatusChange={setStatusFilter}
+                  onSortDirectionToggle={toggleSortDirection}
+                  onEdit={openEditForm}
+                  onDelete={setTaskPendingDelete}
+                />
+              }
+            />
+            <Route
+              path="/completed"
+              element={
+                <CompletedTasksPage
+                  tasks={tasks}
+                  sortDirection={sortDirection}
+                  onSortDirectionToggle={toggleSortDirection}
+                  onEdit={openEditForm}
+                  onDelete={setTaskPendingDelete}
+                />
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+
+        <Modal
+          open={isFormOpen}
+          title={editingTask ? 'Edit task' : 'Add task'}
+          onClose={() => setIsFormOpen(false)}
+        >
+          <TaskForm
+            task={editingTask}
+            onSubmit={handleSubmit}
+            onCancel={() => setIsFormOpen(false)}
+          />
+        </Modal>
+
+        <ConfirmDialog
+          open={taskPendingDelete !== null}
+          title="Delete task"
+          message={`"${taskPendingDelete?.title}" will be removed. This cannot be undone.`}
+          confirmLabel="Delete"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setTaskPendingDelete(null)}
         />
-
-        <TaskList
-          tasks={visibleTasks}
-          emptyTitle={isFiltered ? 'No matching tasks' : 'No tasks yet'}
-          emptyDescription={
-            isFiltered
-              ? 'Try a different status filter.'
-              : 'Tasks you create will show up here.'
-          }
-          onEdit={openEditForm}
-          onDelete={setTaskPendingDelete}
-        />
-      </main>
-
-      <Modal
-        open={isFormOpen}
-        title={editingTask ? 'Edit task' : 'Add task'}
-        onClose={() => setIsFormOpen(false)}
-      >
-        <TaskForm task={editingTask} onSubmit={handleSubmit} onCancel={() => setIsFormOpen(false)} />
-      </Modal>
-
-      <ConfirmDialog
-        open={taskPendingDelete !== null}
-        title="Delete task"
-        message={`"${taskPendingDelete?.title}" will be removed. This cannot be undone.`}
-        confirmLabel="Delete"
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setTaskPendingDelete(null)}
-      />
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 
